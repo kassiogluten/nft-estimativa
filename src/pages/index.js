@@ -6,15 +6,12 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>TITULO</title>
-        <meta property="og:title" content="TITULO | SUBTITULO" />
-        <meta name="description" content="DESCRICAO" />
-        <meta property="og:description" content="DESCRICAO" />
+        <title>Calculo de estimativa de lucro</title>
+        <meta property="og:title" content="Calculo de estimativa de lucro" />
+        <meta name="description" content="Calculo de estimativa de lucro" />
+        <meta property="og:description" content="Calculo de estimativa de lucro" />
         <meta property="og:image" content="/logo.jpg" key="ogimage" />
       </Head>
-      <Header />
-      <Hero />
-      <Hero />
       <Hero />
     </>
   );
