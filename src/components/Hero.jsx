@@ -6,6 +6,8 @@ import {
   Input,
   InputGroup,
   InputLeftAddon,
+  Heading,
+  InputRightElement,
 } from "@chakra-ui/react";
 
 export function Hero() {
@@ -13,7 +15,7 @@ export function Hero() {
   const [valorizacao, setValorizacao] = useState(0);
   const juros = (valor * valorizacao) / 100;
   const subtotal = +valor + juros;
-  const total = (subtotal / 3) * 2;
+  const total = (subtotal / 3) * 2.25;
 
   function handleValue(e) {
     setValor(e.target.value);
@@ -34,9 +36,9 @@ export function Hero() {
         flexDir="column"
         minH="100vh"
       >
-        <VStack>
+        <VStack maxW={300}>
           <Text>Investimento</Text>
-          <InputGroup maxW={300}>
+          <InputGroup>
             <InputLeftAddon>R$</InputLeftAddon>
             <Input
               onChange={handleValue}
@@ -45,28 +47,47 @@ export function Hero() {
             />
           </InputGroup>
         </VStack>
-        <VStack>
-          <Text>Valorização nos ultimos 30 dias</Text>
+        <VStack maxW={300}>
+          <Text>Valorização (desde o investimento)</Text>
           <InputGroup maxW={300}>
             <InputLeftAddon>%</InputLeftAddon>
+            <InputRightElement>
+              <Emoji valorizacao={valorizacao} />
+            </InputRightElement>
             <Input
+              color={valorizacao >= 0 ? "green.400" : "red.400"}
               type="number"
               onChange={handleValorizacao}
-              placeholder="Digite a variaçao da moeda dos ultimos 30 dias"
+              placeholder="Digite a valorização (desde o investimento)"
               value={valorizacao}
             />
           </InputGroup>
+          <Text textAlign="center" color="gray.500" fontSize={14}>
+            Você pode consultar a % em diversos aplicativos, ou perguntar ao
+            Admin
+          </Text>
         </VStack>
         {valor && (
           <VStack>
             <Text>Retirada mensal</Text>
-            <InputGroup maxW={300}>
-              <InputLeftAddon>R$</InputLeftAddon>
-              <Input disabled value={Math.round(total)} />
-            </InputGroup>
+            <Heading> R$ {Math.round(total)},00</Heading>
           </VStack>
         )}
       </Flex>
     </Flex>
   );
+}
+
+function Emoji({ valorizacao }) {
+  if (valorizacao > 100) {
+    return <div>🤑</div>;
+  } else if (valorizacao > 50) {
+    return <div>😁</div>;
+  } else if (valorizacao > 0) {
+    return <div>🙂</div>;
+  } else if (valorizacao > -50) {
+    return <div>😢</div>;
+  } else if (valorizacao <= -50) {
+    return <div>💩</div>;
+  } else return null;
 }
