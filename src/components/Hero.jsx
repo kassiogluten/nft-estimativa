@@ -14,8 +14,10 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 
+import { AnimatePresence, motion } from "framer-motion";
+
 export function Hero() {
-  const [valor, setValor] = useState();
+  const [valor, setValor] = useState(Number);
   const [valorizacao, setValorizacao] = useState(0);
   const juros = (valor * valorizacao) / 100;
   const subtotal = +valor + juros;
@@ -30,10 +32,11 @@ export function Hero() {
   }
 
   const { colorMode, toggleColorMode } = useColorMode();
+  const MotionStack = motion(VStack);
   return (
     <Flex as="section" justify="center" align="center" w="100%">
       <Flex
-        p="5rem 1rem"
+        p="2rem 1rem"
         align="center"
         maxW={1200}
         w="full"
@@ -44,7 +47,7 @@ export function Hero() {
         <Button onClick={toggleColorMode}>
           {colorMode === "light" ? "🌙" : "☀️"}
         </Button>
-        <VStack maxW={300}>
+        <VStack maxW={300} py={8}>
           <Text>Investimento</Text>
           <InputGroup w={150}>
             <InputLeftAddon>R$</InputLeftAddon>
@@ -56,7 +59,7 @@ export function Hero() {
             />
           </InputGroup>
         </VStack>
-        <VStack textAlign="center" maxW={300}>
+        <VStack textAlign="center" maxW={300} py={8}>
           <Text>Valorização (desde o investimento)</Text>
           <InputGroup w={150}>
             <InputLeftAddon>%</InputLeftAddon>
@@ -76,12 +79,19 @@ export function Hero() {
             Admin
           </Text>
         </VStack>
-        {valor && (
-          <VStack>
-            <Text>Retirada mensal</Text>
-            <Heading> R$ {Math.round(total)},00</Heading>
-          </VStack>
-        )}
+        <AnimatePresence>
+          {valor && (
+            <MotionStack
+              py={8}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0 }}
+            >
+              <Text>Retirada mensal</Text>
+              <Heading> R$ {Math.round(total)},00</Heading>
+            </MotionStack>
+          )}
+        </AnimatePresence>
         <Alert fontSize={12} maxW={300} status="warning">
           <AlertIcon />A renda é exclusivamente dependente do Token (nft)
           escolhido
