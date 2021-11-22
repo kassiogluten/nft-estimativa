@@ -8,10 +8,14 @@ import {
   InputLeftAddon,
   Heading,
   InputRightElement,
+  Alert,
+  AlertIcon,
+  Button,
+  useColorMode,
 } from "@chakra-ui/react";
 
 export function Hero() {
-  const [valor, setValor] = useState(1);
+  const [valor, setValor] = useState();
   const [valorizacao, setValorizacao] = useState(0);
   const juros = (valor * valorizacao) / 100;
   const subtotal = +valor + juros;
@@ -25,6 +29,7 @@ export function Hero() {
     setValorizacao(e.target.value);
   }
 
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <Flex as="section" justify="center" align="center" w="100%">
       <Flex
@@ -34,22 +39,26 @@ export function Hero() {
         w="full"
         justify="space-around"
         flexDir="column"
-        minH="100vh"
+        minH="90vh"
       >
+        <Button onClick={toggleColorMode}>
+          {colorMode === "light" ? "🌙" : "☀️"}
+        </Button>
         <VStack maxW={300}>
           <Text>Investimento</Text>
-          <InputGroup>
+          <InputGroup w={150}>
             <InputLeftAddon>R$</InputLeftAddon>
             <Input
+              type="number"
               onChange={handleValue}
-              placeholder="Digite o valor investido"
+              placeholder="Valor"
               value={valor}
             />
           </InputGroup>
         </VStack>
-        <VStack maxW={300}>
+        <VStack textAlign="center" maxW={300}>
           <Text>Valorização (desde o investimento)</Text>
-          <InputGroup maxW={300}>
+          <InputGroup w={150}>
             <InputLeftAddon>%</InputLeftAddon>
             <InputRightElement>
               <Emoji valorizacao={valorizacao} />
@@ -73,6 +82,10 @@ export function Hero() {
             <Heading> R$ {Math.round(total)},00</Heading>
           </VStack>
         )}
+        <Alert fontSize={12} maxW={300} status="warning">
+          <AlertIcon />A renda é exclusivamente dependente do Token (nft)
+          escolhido
+        </Alert>
       </Flex>
     </Flex>
   );
@@ -83,7 +96,7 @@ function Emoji({ valorizacao }) {
     return <div>🤑</div>;
   } else if (valorizacao > 50) {
     return <div>😁</div>;
-  } else if (valorizacao > 0) {
+  } else if (valorizacao >= 0) {
     return <div>🙂</div>;
   } else if (valorizacao > -50) {
     return <div>😢</div>;
