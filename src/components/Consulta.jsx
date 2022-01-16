@@ -37,7 +37,10 @@ export function Consulta() {
   const [contract, setContract] = useState(
     "0x00e1656e45f18ec6747f5a8496fd39b50b38396d"
   );
+  const apikey = "TR6WIYE4AWWI8422RUK6RBJYQQ1N1IS8JV";
+
   const [data, setData] = useState([]);
+  const [coinBalance, setCoinBalance] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // useEffect(() => {}, []);
@@ -45,14 +48,33 @@ export function Consulta() {
   function handleUpdate() {
     setLoading(true);
     fetch(
-      `https://api.bscscan.com/api?module=account&action=tokentx&contractaddress=${contract}&address=${address}&page=1&offset=50&startblock=0&endblock=999999999&sort=asc&apikey=TR6WIYE4AWWI8422RUK6RBJYQQ1N1IS8JV`
+      `https://api.bscscan.com/api?module=account&action=tokentx&contractaddress=${contract}&address=${address}&page=1&offset=50&startblock=0&endblock=999999999&sort=asc&apikey=${apikey}`
     )
       .then((res) => res.json())
       .then((res) => {
         setData(res.result);
         if (res.status === "0") {
           alert("Nada encontrado");
-        } 
+        }
+        console.log(res.result);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  }
+  function handleCoinBalance() {
+    setLoading(true);
+    fetch(
+      `https://api.bscscan.com/api?module=account&action=tokenbalance&contractaddress=${contract}&address=${address}&tag=latest&apikey=${apikey}`
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        setCoinBalance(res.result);
+        if (res.status === "0") {
+          alert("Nada encontrado");
+        }
         console.log(res.result);
         setLoading(false);
       })
@@ -91,7 +113,13 @@ export function Consulta() {
               placeholder="Ex: 0x00e165..."
             />
           </InputGroup>
-          <Button isLoading={loading} onClick={(e) => handleUpdate(e)}>
+          <Button
+            isLoading={loading}
+            onClick={(e) => {
+              handleCoinBalance(e);
+              handleUpdate(e)
+            }}
+          >
             Atualizar
           </Button>
         </VStack>
@@ -103,8 +131,11 @@ export function Consulta() {
             // <h1 key={i}>{(item.value / Math.pow(10, 19))} bnb</h1>
           ))} */}
 
-        {data.length > 0 && (
-          <h1>{data.length} resultados, verifique console</h1>
+        {data.length > 0 && <h1>{data.length} transações (console)</h1>}
+        {coinBalance.length > 0 && (
+          <h1>
+            {(coinBalance / 1000000000000000000).toFixed(5)} {data[0]?.tokenSymbol}
+          </h1>
         )}
 
         {/*  <AnimatePresence>
