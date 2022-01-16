@@ -43,7 +43,9 @@ export function Consulta() {
   const [coinBalance, setCoinBalance] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {}, []);
+  useEffect(() => {
+    handleDollar();
+  }, []);
 
   function handleUpdate() {
     setLoading(true);
@@ -56,7 +58,7 @@ export function Consulta() {
         if (res.status === "0") {
           alert("Nada encontrado");
         }
-        console.log(res.result);
+        // console.log(res.result);
         setLoading(false);
       })
       .catch((err) => {
@@ -75,12 +77,38 @@ export function Consulta() {
         if (res.status === "0") {
           alert("Nada encontrado");
         }
-        console.log(res.result);
-        setLoading(false);
+        // console.log(res.result);
       })
       .catch((err) => {
-        setLoading(false);
         console.log(err);
+      });
+  }
+
+  const [coinInfo, setCoinInfo] = useState();
+
+  function handleCoinInfo() {
+    setLoading(true);
+    fetch(`https://api.pancakeswap.info/api/v2/tokens/${contract}`)
+      .then((res) => res.json())
+      .then((res) => {
+        setCoinInfo(res);
+        console.log("value", res);
+      })
+      .catch((err) => {
+        console.log("erro", err);
+      });
+  }
+
+  const [dollar, setDollar] = useState();
+  function handleDollar() {
+    fetch(`https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL`)
+      .then((res) => res.json())
+      .then((res) => {
+        setDollar(res.USDBRL.high);
+        console.log("dollar", res);
+      })
+      .catch((err) => {
+        console.log("erro", err);
       });
   }
 
@@ -97,6 +125,7 @@ export function Consulta() {
         minH="90vh"
       >
         <VStack w="full" maxW={600} py={8}>
+          {dollar && <h1>U$1 = R${dollar}</h1>}
           <InputGroup>
             <InputLeftAddon w={100}>Carteira:</InputLeftAddon>
             <Input
@@ -117,7 +146,8 @@ export function Consulta() {
             isLoading={loading}
             onClick={(e) => {
               handleCoinBalance(e);
-              handleUpdate(e)
+              handleUpdate(e);
+              handleCoinInfo();
             }}
           >
             Atualizar
@@ -131,12 +161,24 @@ export function Consulta() {
             // <h1 key={i}>{(item.value / Math.pow(10, 19))} bnb</h1>
           ))} */}
 
-        {data.length > 0 && <h1>{data.length} transações (console)</h1>}
-        {coinBalance.length > 0 && (
-          <h1>
-            {(coinBalance / 1000000000000000000).toFixed(5)} {data[0]?.tokenSymbol}
-          </h1>
-        )}
+        <VStack textAlign="center">
+          {data.length > 0 && <h1>{data.length} transações (console)</h1>}
+          {coinBalance.length > 0 && (
+            <h1>
+              {(coinBalance / 1000000000000000000).toFixed(5)}{" "}
+              {data[0]?.tokenSymbol}
+            </h1>
+          )}
+          <VStack borderRadius={6} p={4} bg="blackAlpha.300">
+            {coinInfo && (
+              <h1>
+                {coinInfo.data.name}
+                <br />
+                U$ {parseFloat(coinInfo.data.price).toFixed(2)} <br/> R$ {(dollar * coinInfo.data.price).toFixed(2)}
+              </h1>
+            )}
+          </VStack>
+        </VStack>
 
         {/*  <AnimatePresence>
           {carteira && (
