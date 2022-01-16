@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { Header } from "../components/Header";
 import { Hero } from "../components/Hero";
+import { Consulta } from "../components/Consulta";
 
 export default function Home() {
   return (
@@ -12,7 +13,7 @@ export default function Home() {
         <meta property="og:description" content="Calculo de estimativa de lucro" />
         <meta property="og:image" content="/logo.jpg" key="ogimage" />
       </Head>
-      <Hero />
+      <Consulta />
     </>
   );
 }
